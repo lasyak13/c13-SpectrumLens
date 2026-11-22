@@ -1,7 +1,7 @@
 {
   "project": "C13 SpectrumLens",
   "phase": "Phase 2: Self-Evolution",
-  "generatedAt": "2026-11-22T16:57:36.836Z",
+  "generatedAt": "2026-11-22T17:05:46.581Z",
   "mode": "heuristic",
   "objective": "maximise Pd - 1.5*Pfa on dev (sub-band level)",
   "guardrail": {
