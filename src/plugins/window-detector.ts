@@ -41,15 +41,27 @@ export type ThresholdRule =
   /** Threshold expressed as a margin above the estimated noise floor, dB. */
   | { kind: 'relative'; marginDb: number }
 
+/**
+ * Per-band test statistic.
+ *  - `mean`: band-averaged PSD (classic radiometer / energy detector).
+ *  - `peak`: largest bin in the band (matched to narrowband emitters, which
+ *    concentrate their energy in a few bins instead of being diluted across the band).
+ */
+export type BandStatistic = 'mean' | 'peak'
+
 export interface SignalWindowConfig {
   /** Generation label, carried into evidence for traceability. */
   generation: string
   /** Number of samples consumed from each window (from the start). 0 = all. */
   windowLength: number
-  /** Number of non-overlapping sub-windows averaged into the PSD. */
+  /** Number of non-overlapping sub-windows integrated into the PSD. */
   subWindows: number
+  /** How sub-window periodograms are integrated (defaults to `average`). */
+  integration?: 'average' | 'max-hold'
   taper: TaperName
   numSubBands: number
+  /** Per-band decision statistic (defaults to `mean` for Gen-0 compatibility). */
+  bandStatistic?: BandStatistic
   noiseFloor: NoiseFloorMethod
   threshold: ThresholdRule
   /**
@@ -63,7 +75,13 @@ export interface BandEvidence {
   band: number
   centerFrequencyHz: number
   bandwidthHz: number
+  /** Value of the band statistic (mean or peak-bin PSD), dB/Hz. */
   measuredPsdDb: number
+  statistic: BandStatistic
+  /** Band-averaged PSD, dB/Hz (always reported, whatever the statistic). */
+  bandMeanPsdDb: number
+  /** Peak-bin PSD over band-mean PSD, dB: ≈ ln(bins) for noise, large for narrowband carriers. */
+  peakToMeanDb: number
   noiseFloorDb: number
   thresholdDb: number
   /** Measured PSD minus estimated noise floor. */
@@ -101,8 +119,10 @@ export function baselineEnergyDetectorConfig(nominalNoiseFloorDb: number): Signa
     generation: 'Gen-0 Baseline Energy Detector',
     windowLength: 0,
     subWindows: 1,
+    integration: 'average',
     taper: 'rectangular',
     numSubBands: 16,
+    bandStatistic: 'mean',
     noiseFloor: { kind: 'assumed', floorDb: nominalNoiseFloorDb },
     threshold: { kind: 'absolute', thresholdDb: nominalNoiseFloorDb + 3 },
     floorUncertaintyDb: 1,
@@ -148,7 +168,12 @@ export class SignalWindowDetector extends Service {
     const total = window.samplesI.length
     const used = cfg.windowLength > 0 ? Math.min(cfg.windowLength, total) : total
     const segLen = 2 ** Math.floor(Math.log2(used / cfg.subWindows))
-    const psdOpts: PsdOptions = { fftSize: segLen, segments: cfg.subWindows, taper: cfg.taper }
+    const psdOpts: PsdOptions = {
+      fftSize: segLen,
+      segments: cfg.subWindows,
+      taper: cfg.taper,
+      combine: cfg.integration === 'max-hold' ? 'max' : 'mean',
+    }
     const { psd, bands } = this.ctx.dsp.subBandPsd(
       window.samplesI.subarray(0, used) as Float64Array,
       window.samplesQ.subarray(0, used) as Float64Array,
@@ -161,14 +186,18 @@ export class SignalWindowDetector extends Service {
     const thresholdDb =
       cfg.threshold.kind === 'absolute' ? cfg.threshold.thresholdDb : noiseFloorDb + cfg.threshold.marginDb
 
-    // Std-dev (dB) of a band-mean PSD: averaged chi-square with (bins × segments) dof.
+    // Std-dev (dB) of the statistic: averaged chi-square with (bins × segments) dof for the
+    // band mean, or `segments` dof for a single (peak) bin.
+    const statistic: BandStatistic = cfg.bandStatistic ?? 'mean'
     const binsPerBand = psd.fftSize / cfg.numSubBands
-    const measSigmaDb = 10 / Math.LN10 / Math.sqrt(binsPerBand * cfg.subWindows)
+    const dof = statistic === 'mean' ? binsPerBand * cfg.subWindows : cfg.subWindows
+    const measSigmaDb = 10 / Math.LN10 / Math.sqrt(dof)
     const sigmaDb = Math.hypot(measSigmaDb, cfg.floorUncertaintyDb)
 
     const evidence: BandEvidence[] = bands.map((b) => {
-      const snrDb = b.meanPsdDb - noiseFloorDb
-      const snrMarginDb = b.meanPsdDb - thresholdDb
+      const valueDb = statistic === 'mean' ? b.meanPsdDb : b.peakPsdDb
+      const snrDb = valueDb - noiseFloorDb
+      const snrMarginDb = valueDb - thresholdDb
       const occupied = snrMarginDb > 0
       // Logistic approximation of Φ(|margin|/σ).
       const confidence = 1 / (1 + Math.exp((-1.702 * Math.abs(snrMarginDb)) / sigmaDb))
@@ -177,7 +206,10 @@ export class SignalWindowDetector extends Service {
         band: b.index,
         centerFrequencyHz: b.centerHz,
         bandwidthHz: b.bandwidthHz,
-        measuredPsdDb: b.meanPsdDb,
+        measuredPsdDb: valueDb,
+        statistic,
+        bandMeanPsdDb: b.meanPsdDb,
+        peakToMeanDb: b.peakPsdDb - b.meanPsdDb,
         noiseFloorDb,
         thresholdDb,
         snrDb,
@@ -186,7 +218,7 @@ export class SignalWindowDetector extends Service {
         confidence,
         summary:
           `Band ${String(b.index).padStart(2)} @ ${f(b.centerHz)} (±${f(b.bandwidthHz / 2)}): ` +
-          `PSD ${b.meanPsdDb.toFixed(2)} dB/Hz vs floor ${noiseFloorDb.toFixed(2)} dB/Hz ` +
+          `${statistic === 'peak' ? 'peak-bin ' : ''}PSD ${valueDb.toFixed(2)} dB/Hz vs floor ${noiseFloorDb.toFixed(2)} dB/Hz ` +
           `→ SNR ${snrDb >= 0 ? '+' : ''}${snrDb.toFixed(2)} dB, margin ${snrMarginDb >= 0 ? '+' : ''}` +
           `${snrMarginDb.toFixed(2)} dB vs threshold ⇒ ${occupied ? 'OCCUPIED' : 'vacant'} ` +
           `(confidence ${(confidence * 100).toFixed(1)}%)`,

@@ -1,10 +1,13 @@
 /**
- * C13: SpectrumLens — Phase 1 entry point.
+ * C13: SpectrumLens — Phase 2 entry point (Self-Evolution).
  *
- * Boots a Cordis Context, mounts `dsp` (DspFixtureService) and `detector`
- * (SignalWindowDetector, Gen-0 Baseline Energy Detector), evaluates Pd / Pfa per
- * SNR slice on the dev and held-out test splits, prints two signal-evidence
- * reports and exits.
+ * Boots a Cordis Context, mounts `dsp` (DspFixtureService) and the Gen-0 Baseline
+ * Energy Detector as `detector`, prints the Phase-1 baseline, then mounts the
+ * `SelfEvolver` plugin which runs the Gen 0 → Gen 3 failure-driven evolution loop of
+ * the editable signal window (Gemini when GEMINI_API_KEY is set, otherwise a
+ * deterministic optimizer), hot-swapping `ctx.detector` through the Cordis plugin
+ * lifecycle behind a regression gate. Finishes with dev / held-out test tables, a
+ * low-SNR before/after comparison and a signal-evidence report from the survivor.
  */
 import { Context } from 'cordis'
 import DspFixtureService, {
@@ -16,6 +19,7 @@ import SignalWindowDetector, {
   baselineEnergyDetectorConfig,
   type DetectionResult,
 } from './plugins/window-detector.ts'
+import SelfEvolver, { MAX_PFA, type EvolutionHistory } from './plugins/self-evolver.ts'
 
 const pct = (x: number) => `${(x * 100).toFixed(1)}%`.padStart(7)
 const sdb = (x: number) => `${x >= 0 ? '+' : ''}${x}`
@@ -87,58 +91,116 @@ function printEvidence(fx: SignalWindowFixture, det: DetectionResult) {
   }
 }
 
+function printEvolution(h: EvolutionHistory) {
+  const head = ['Gen', 'Active signal window', 'U(dev)', 'Pd -10', 'Pd -5', 'Pfa', 'Proposed candidate', 'U(cand)', 'Gate']
+  const pd = (m: EvolutionHistory['generations'][number]['dev'], s: number) =>
+    pct(m.slices.find((x) => x.snrDb === s)!.pd).trim()
+  const rows = h.generations.map((g) => [
+    String(g.generation),
+    g.label,
+    g.dev.utility.toFixed(3),
+    pd(g.dev, -10),
+    pd(g.dev, -5),
+    pct(g.dev.pfa).trim(),
+    g.candidate?.label ?? '— (survivor)',
+    g.candidate ? g.candidate.dev.utility.toFixed(3) : '',
+    g.candidate ? (g.candidate.decision === 'accepted' ? 'ACCEPT' : 'ROLLBACK') : '',
+  ])
+  const widths = head.map((x, i) => Math.max(x.length, ...rows.map((r) => r[i].length)))
+  const line = (c: string[]) => '│ ' + c.map((x, i) => (i === 1 || i === 6 ? x.padEnd(widths[i]) : x.padStart(widths[i]))).join(' │ ') + ' │'
+  const rule = (l: string, m: string, r: string) => l + widths.map((w) => '─'.repeat(w + 2)).join(m) + r
+  console.log(`\nSelf-evolution summary (${h.mode} mode; U = Pd − 1.5·Pfa on dev, guardrail Pfa ≤ ${pct(MAX_PFA).trim()})`)
+  console.log(rule('┌', '┬', '┐'))
+  console.log(line(head))
+  console.log(rule('├', '┼', '┤'))
+  rows.forEach((r) => console.log(line(r)))
+  console.log(rule('└', '┴', '┘'))
+}
+
+function printLowSnr(title: string, before: EvaluationReport, after: EvaluationReport) {
+  console.log(`\n${title}`)
+  for (const s of after.slices) {
+    const b = before.slices.find((x) => x.snrDb === s.snrDb)!
+    console.log(
+      `  ${`${sdb(s.snrDb as number)} dB`.padStart(7)}: Pd ${pct(b.pd)} → ${pct(s.pd)}  (Δ ${((s.pd - b.pd) * 100).toFixed(1).padStart(5)} pp)` +
+        `   Pfa ${pct(b.pfa)} → ${pct(s.pfa)}`,
+    )
+  }
+  console.log(
+    `  Overall : Pd ${pct(before.overall.pd)} → ${pct(after.overall.pd)}   Pfa ${pct(before.overall.pfa)} → ${pct(after.overall.pfa)}`,
+  )
+}
+
 async function main() {
   const ctx = new Context()
   const dspFiber = await ctx.plugin(DspFixtureService)
 
-  // Generate the fixture set first so the detector's assumed noise floor and
-  // sub-band layout come from the same configuration as the data.
+  // Scoped injections are disposed right after use: a live `inject` callback would be
+  // re-run by Cordis every time `ctx.detector` is hot-swapped during evolution.
+  const once = async (deps: string[], fn: (ctx: Context) => unknown) => {
+    const fiber = ctx.inject(deps, fn)
+    await fiber
+    await fiber.dispose()
+  }
+
   let fixtures!: FixtureSet
-  await ctx.inject(['dsp'], (ctx) => {
+  await once(['dsp'], (ctx) => {
     fixtures = ctx.dsp.generateFixtures()
   })
-  const detectorFiber = await ctx.plugin(SignalWindowDetector, {
+  const gen0Fiber = await ctx.plugin(SignalWindowDetector, {
     ...baselineEnergyDetectorConfig(fixtures.nominalNoiseFloorDb),
     numSubBands: fixtures.options.numSubBands,
   })
 
-  await ctx.inject(['dsp', 'detector'], (ctx) => {
-    const { dsp, detector } = ctx
-    const o = fixtures.options
-    console.log('C13: SpectrumLens — Phase 1 / Generation 0 (First Demo)')
-    console.log(
-      `Fixtures: seed=0x${o.seed.toString(16)}, fs=${o.sampleRateHz / 1e6} MS/s, window=${o.windowLength} samples, ` +
-        `${o.numSubBands} sub-bands, ${o.windowsPerSlice} windows/slice/split, noise drift ±${o.noiseDriftDb / 2} dB, ` +
-        `nominal floor ${fixtures.nominalNoiseFloorDb.toFixed(2)} dB/Hz`,
-    )
-    console.log(`Detector: ${detector.config.generation} — ${JSON.stringify({
-      taper: detector.config.taper,
-      subWindows: detector.config.subWindows,
-      noiseFloor: detector.config.noiseFloor.kind,
-      threshold: detector.config.threshold,
-    })}`)
+  const o = fixtures.options
+  console.log('C13: SpectrumLens — Phase 2: Self-Evolution of the signal window')
+  console.log(
+    `Fixtures: seed=0x${o.seed.toString(16)}, fs=${o.sampleRateHz / 1e6} MS/s, window=${o.windowLength} samples, ` +
+      `${o.numSubBands} sub-bands, ${o.windowsPerSlice} windows/slice/split, noise drift ±${o.noiseDriftDb / 2} dB, ` +
+      `nominal floor ${fixtures.nominalNoiseFloorDb.toFixed(2)} dB/Hz`,
+  )
 
+  let gen0Dev!: EvaluationReport
+  let gen0Test!: EvaluationReport
+  await once(['dsp', 'detector'], (ctx) => {
+    gen0Dev = ctx.dsp.evaluate(fixtures.dev, ctx.detector.detectAll(fixtures.dev))
+    gen0Test = ctx.dsp.evaluate(fixtures.test, ctx.detector.detectAll(fixtures.test))
+  })
+  printTable('Gen-0 Baseline Energy Detector — dev split (sub-band level)', gen0Dev)
+
+  // Mount the evolver (injects only `dsp`, so it survives detector hot-swaps) and evolve.
+  console.log('')
+  const evolverFiber = await ctx.plugin(SelfEvolver)
+  let history!: EvolutionHistory
+  await once(['evolver'], async (ctx) => {
+    history = await ctx.evolver.evolve({
+      fixtures,
+      detectorFiber: gen0Fiber,
+      log: (l) => console.log(l),
+    })
+  })
+  printEvolution(history)
+
+  await once(['dsp', 'detector'], (ctx) => {
+    const { dsp, detector } = ctx
+    console.log(`\nSurvivor: ${detector.config.generation}`)
+    console.log(`  ${JSON.stringify(detector.config)}`)
     const devDet = detector.detectAll(fixtures.dev)
     const testDet = detector.detectAll(fixtures.test)
-    printTable('Dev split — Pd / Pfa by SNR slice (sub-band level)', dsp.evaluate(fixtures.dev, devDet))
-    printTable('Held-out test split — Pd / Pfa by SNR slice (sub-band level)', dsp.evaluate(fixtures.test, testDet))
+    const finalDev = dsp.evaluate(fixtures.dev, devDet)
+    const finalTest = dsp.evaluate(fixtures.test, testDet)
+    printTable(`${detector.config.generation} — dev split (sub-band level)`, finalDev)
+    printTable(`${detector.config.generation} — held-out test split (sub-band level)`, finalTest)
+    printLowSnr('Gen-0 → survivor, dev split, per SNR slice:', gen0Dev, finalDev)
+    printLowSnr('Gen-0 → survivor, held-out test split, per SNR slice:', gen0Test, finalTest)
 
-    // Two sample evidence reports from the held-out set: a strong-SNR window with
-    // emitters, and a low-SNR window illustrating baseline failure modes.
-    const pick = (snr: number, pred: (i: number) => boolean) => {
-      const i = fixtures.test.findIndex((f, i) => f.snrDb === snr && pred(i))
-      return i >= 0 ? i : fixtures.test.findIndex((f) => f.snrDb === snr)
-    }
-    const strong = pick(10, (i) => fixtures.test[i].emitters.length >= 2)
-    const weak = pick(-5, (i) => {
-      const truth = fixtures.test[i].occupiedBands
-      const said = testDet[i].occupiedBands
-      return truth.length > 0 && said.join() !== truth.join()
-    })
-    for (const i of [strong, weak]) printEvidence(fixtures.test[i], testDet[i])
+    // Evidence report for a −10 dB held-out window the survivor fully resolves.
+    const i = fixtures.test.findIndex((f, i) => f.snrDb === -10 && f.occupiedBands.length > 0 &&
+      testDet[i].occupiedBands.join() === f.occupiedBands.join())
+    if (i >= 0) printEvidence(fixtures.test[i], testDet[i])
   })
 
-  await detectorFiber.dispose()
+  await evolverFiber.dispose()
   await dspFiber.dispose()
   console.log('\nDone.')
 }
