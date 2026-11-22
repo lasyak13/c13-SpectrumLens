@@ -1,0 +1,372 @@
+{
+  "project": "C13 SpectrumLens",
+  "phase": "Phase 3: Graduate Extension: learned detector vs. energy detection",
+  "generatedAt": "2026-11-22T17:05:48.694Z",
+  "evaluationSplit": "test",
+  "trainingAndTuningSplit": "dev",
+  "leakage": "none: evolution, threshold calibration, feature standardisation and model fitting use dev only",
+  "scoring": "per (window, sub-band) cell; Pd = TP/occupied, Pfa = FP/vacant",
+  "utility": "Pd - 1.5 * Pfa",
+  "evolutionMode": "heuristic",
+  "fixtures": {
+    "seed": 3091,
+    "sampleRateHz": 1000000,
+    "windowLength": 4096,
+    "numSubBands": 16,
+    "windowsPerSlice": 60,
+    "noiseDriftDb": 6,
+    "emptyWindowProbability": 0.25,
+    "maxEmitters": 3,
+    "snrSlices": [
+      -10,
+      -5,
+      0,
+      5,
+      10
+    ]
+  },
+  "detectors": [
+    {
+      "key": "baseline",
+      "name": "Baseline Energy",
+      "description": "Gen 0 fixed-threshold energy detector (band-mean PSD, assumed floor, absolute threshold)",
+      "config": {
+        "generation": "Gen-0 Baseline Energy Detector",
+        "windowLength": 0,
+        "subWindows": 1,
+        "integration": "average",
+        "taper": "rectangular",
+        "numSubBands": 16,
+        "bandStatistic": "mean",
+        "noiseFloor": {
+          "kind": "assumed",
+          "floorDb": -60
+        },
+        "threshold": {
+          "kind": "absolute",
+          "thresholdDb": -57
+        },
+        "floorUncertaintyDb": 1
+      },
+      "slices": [
+        {
+          "snrDb": -10,
+          "windows": 60,
+          "truePositives": 6,
+          "occupied": 79,
+          "missed": 73,
+          "falsePositives": 28,
+          "vacant": 881,
+          "pd": 0.0759,
+          "pfa": 0.0318,
+          "utility": 0.0283
+        },
+        {
+          "snrDb": -5,
+          "windows": 60,
+          "truePositives": 11,
+          "occupied": 81,
+          "missed": 70,
+          "falsePositives": 15,
+          "vacant": 879,
+          "pd": 0.1358,
+          "pfa": 0.0171,
+          "utility": 0.1102
+        },
+        {
+          "snrDb": 0,
+          "windows": 60,
+          "truePositives": 22,
+          "occupied": 100,
+          "missed": 78,
+          "falsePositives": 20,
+          "vacant": 860,
+          "pd": 0.22,
+          "pfa": 0.0233,
+          "utility": 0.1851
+        },
+        {
+          "snrDb": 5,
+          "windows": 60,
+          "truePositives": 72,
+          "occupied": 95,
+          "missed": 23,
+          "falsePositives": 21,
+          "vacant": 865,
+          "pd": 0.7579,
+          "pfa": 0.0243,
+          "utility": 0.7215
+        },
+        {
+          "snrDb": 10,
+          "windows": 60,
+          "truePositives": 81,
+          "occupied": 86,
+          "missed": 5,
+          "falsePositives": 5,
+          "vacant": 874,
+          "pd": 0.9419,
+          "pfa": 0.0057,
+          "utility": 0.9333
+        }
+      ],
+      "overall": {
+        "snrDb": "overall",
+        "windows": 300,
+        "truePositives": 192,
+        "occupied": 441,
+        "missed": 249,
+        "falsePositives": 89,
+        "vacant": 4359,
+        "pd": 0.4354,
+        "pfa": 0.0204,
+        "utility": 0.4047
+      }
+    },
+    {
+      "key": "evolved",
+      "name": "Self-Evolved Window",
+      "description": "Gen 3 survivor of the heuristic self-evolution loop",
+      "config": {
+        "generation": "Gen-3 multi-window-integration",
+        "windowLength": 0,
+        "subWindows": 4,
+        "integration": "average",
+        "taper": "rectangular",
+        "numSubBands": 16,
+        "bandStatistic": "peak",
+        "noiseFloor": {
+          "kind": "median"
+        },
+        "threshold": {
+          "kind": "relative",
+          "marginDb": 5.879
+        },
+        "floorUncertaintyDb": 1
+      },
+      "slices": [
+        {
+          "snrDb": -10,
+          "windows": 60,
+          "truePositives": 37,
+          "occupied": 79,
+          "missed": 42,
+          "falsePositives": 8,
+          "vacant": 881,
+          "pd": 0.4684,
+          "pfa": 0.0091,
+          "utility": 0.4547
+        },
+        {
+          "snrDb": -5,
+          "windows": 60,
+          "truePositives": 60,
+          "occupied": 81,
+          "missed": 21,
+          "falsePositives": 6,
+          "vacant": 879,
+          "pd": 0.7407,
+          "pfa": 0.0068,
+          "utility": 0.7305
+        },
+        {
+          "snrDb": 0,
+          "windows": 60,
+          "truePositives": 100,
+          "occupied": 100,
+          "missed": 0,
+          "falsePositives": 8,
+          "vacant": 860,
+          "pd": 1,
+          "pfa": 0.0093,
+          "utility": 0.986
+        },
+        {
+          "snrDb": 5,
+          "windows": 60,
+          "truePositives": 95,
+          "occupied": 95,
+          "missed": 0,
+          "falsePositives": 2,
+          "vacant": 865,
+          "pd": 1,
+          "pfa": 0.0023,
+          "utility": 0.9965
+        },
+        {
+          "snrDb": 10,
+          "windows": 60,
+          "truePositives": 86,
+          "occupied": 86,
+          "missed": 0,
+          "falsePositives": 10,
+          "vacant": 874,
+          "pd": 1,
+          "pfa": 0.0114,
+          "utility": 0.9828
+        }
+      ],
+      "overall": {
+        "snrDb": "overall",
+        "windows": 300,
+        "truePositives": 378,
+        "occupied": 441,
+        "missed": 63,
+        "falsePositives": 34,
+        "vacant": 4359,
+        "pd": 0.8571,
+        "pfa": 0.0078,
+        "utility": 0.8454
+      }
+    },
+    {
+      "key": "learned",
+      "name": "Learned Feature",
+      "description": "L2 logistic regression on multi-dimensional per-sub-band spectral features, fitted on dev only",
+      "config": {
+        "kind": "l2-logistic-regression",
+        "trainedOn": {
+          "split": "dev",
+          "windows": 300,
+          "cells": 4800,
+          "positives": 410
+        },
+        "features": [
+          "peakToMedianDb",
+          "meanToMedianDb",
+          "spectralFlatnessDb",
+          "spectralEntropy",
+          "logKurtosis",
+          "welchPeakDb",
+          "persistence",
+          "maxSubPeakDb",
+          "subPeakSpreadDb"
+        ],
+        "mean": [
+          8.761773093786147,
+          0.2674012636906264,
+          -2.747864303547248,
+          0.9048166246703689,
+          0.9675592469776895,
+          4.747936440430511,
+          0.056302083333333336,
+          8.435819880923258,
+          1.2722013009422795
+        ],
+        "std": [
+          4.061979310992956,
+          1.4152746916896712,
+          1.2072161478337822,
+          0.09085303262849616,
+          0.3525062734220657,
+          3.5601693426559033,
+          0.18678857364854407,
+          2.898894691398685,
+          0.7820835714117509
+        ],
+        "weights": [
+          0.8236997890879316,
+          0.9945283112279194,
+          -0.33025869600604996,
+          -0.3691097008943187,
+          1.3260076855418326,
+          1.820348409869925,
+          0.7041755798576292,
+          0.8024644587660054,
+          0.04764670399667563
+        ],
+        "bias": -3.137920399399638,
+        "threshold": 0.1778358947073822,
+        "training": {
+          "finalLoss": 0.06410256340653099,
+          "iterations": 3000,
+          "devPd": 0.8804878048780488,
+          "devPfa": 0.004783599088838269
+        },
+        "config": {
+          "l2": 0.001,
+          "learningRate": 0.5,
+          "iterations": 3000,
+          "designPfa": 0.05,
+          "pfaWeight": 1.5,
+          "subWindows": 8,
+          "persistenceThresholdDb": 9
+        }
+      },
+      "slices": [
+        {
+          "snrDb": -10,
+          "windows": 60,
+          "truePositives": 40,
+          "occupied": 79,
+          "missed": 39,
+          "falsePositives": 5,
+          "vacant": 881,
+          "pd": 0.5063,
+          "pfa": 0.0057,
+          "utility": 0.4978
+        },
+        {
+          "snrDb": -5,
+          "windows": 60,
+          "truePositives": 65,
+          "occupied": 81,
+          "missed": 16,
+          "falsePositives": 2,
+          "vacant": 879,
+          "pd": 0.8025,
+          "pfa": 0.0023,
+          "utility": 0.7991
+        },
+        {
+          "snrDb": 0,
+          "windows": 60,
+          "truePositives": 100,
+          "occupied": 100,
+          "missed": 0,
+          "falsePositives": 5,
+          "vacant": 860,
+          "pd": 1,
+          "pfa": 0.0058,
+          "utility": 0.9913
+        },
+        {
+          "snrDb": 5,
+          "windows": 60,
+          "truePositives": 95,
+          "occupied": 95,
+          "missed": 0,
+          "falsePositives": 2,
+          "vacant": 865,
+          "pd": 1,
+          "pfa": 0.0023,
+          "utility": 0.9965
+        },
+        {
+          "snrDb": 10,
+          "windows": 60,
+          "truePositives": 86,
+          "occupied": 86,
+          "missed": 0,
+          "falsePositives": 4,
+          "vacant": 874,
+          "pd": 1,
+          "pfa": 0.0046,
+          "utility": 0.9931
+        }
+      ],
+      "overall": {
+        "snrDb": "overall",
+        "windows": 300,
+        "truePositives": 386,
+        "occupied": 441,
+        "missed": 55,
+        "falsePositives": 18,
+        "vacant": 4359,
+        "pd": 0.8753,
+        "pfa": 0.0041,
+        "utility": 0.8691
+      }
+    }
+  ]
+}
