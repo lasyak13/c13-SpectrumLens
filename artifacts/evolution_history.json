@@ -1,0 +1,2470 @@
+{
+  "project": "C13 SpectrumLens",
+  "phase": "Phase 2: Self-Evolution",
+  "generatedAt": "2026-11-22T16:57:36.836Z",
+  "mode": "heuristic",
+  "objective": "maximise Pd - 1.5*Pfa on dev (sub-band level)",
+  "guardrail": {
+    "maxPfa": 0.1
+  },
+  "fixtures": {
+    "seed": 3091,
+    "sampleRateHz": 1000000,
+    "windowLength": 4096,
+    "numSubBands": 16,
+    "windowsPerSlice": 60,
+    "noiseDriftDb": 6,
+    "emptyWindowProbability": 0.25,
+    "maxEmitters": 3,
+    "snrSlices": [
+      -10,
+      -5,
+      0,
+      5,
+      10
+    ]
+  },
+  "generations": [
+    {
+      "generation": 0,
+      "label": "Gen-0 Baseline Energy Detector",
+      "config": {
+        "generation": "Gen-0 Baseline Energy Detector",
+        "windowLength": 0,
+        "subWindows": 1,
+        "integration": "average",
+        "taper": "rectangular",
+        "numSubBands": 16,
+        "bandStatistic": "mean",
+        "noiseFloor": {
+          "kind": "assumed",
+          "floorDb": -60
+        },
+        "threshold": {
+          "kind": "absolute",
+          "thresholdDb": -57
+        },
+        "floorUncertaintyDb": 1
+      },
+      "dev": {
+        "pd": 0.473,
+        "pfa": 0.014,
+        "utility": 0.452,
+        "slices": [
+          {
+            "snrDb": -10,
+            "pd": 0.038,
+            "pfa": 0.01,
+            "tp": 3,
+            "occupied": 79,
+            "fp": 9,
+            "vacant": 881
+          },
+          {
+            "snrDb": -5,
+            "pd": 0.06,
+            "pfa": 0.016,
+            "tp": 4,
+            "occupied": 67,
+            "fp": 14,
+            "vacant": 893
+          },
+          {
+            "snrDb": 0,
+            "pd": 0.341,
+            "pfa": 0.008,
+            "tp": 28,
+            "occupied": 82,
+            "fp": 7,
+            "vacant": 878
+          },
+          {
+            "snrDb": 5,
+            "pd": 0.747,
+            "pfa": 0.018,
+            "tp": 62,
+            "occupied": 83,
+            "fp": 16,
+            "vacant": 877
+          },
+          {
+            "snrDb": 10,
+            "pd": 0.98,
+            "pfa": 0.017,
+            "tp": 97,
+            "occupied": 99,
+            "fp": 15,
+            "vacant": 861
+          }
+        ]
+      },
+      "failures": {
+        "missedDetections": 216,
+        "falseAlarms": 61,
+        "missedLowSnr": 139,
+        "falseAlarmsEmptyWindows": 21,
+        "falseAlarmsAdjacent": 5,
+        "missedBySlice": {
+          "-10dB": 76,
+          "-5dB": 63,
+          "0dB": 54,
+          "5dB": 21,
+          "10dB": 2
+        },
+        "falseAlarmsBySlice": {
+          "-10dB": 9,
+          "-5dB": 14,
+          "0dB": 7,
+          "5dB": 16,
+          "10dB": 15
+        },
+        "missedByKind": {
+          "tone": 79,
+          "burst": 137
+        },
+        "floorRmsErrorDb": 1.72,
+        "errorsInBiasedWindows": 202,
+        "missedPeakToMeanDb": 12.487,
+        "vacantPeakToMeanDb": 7.733,
+        "vacantStatisticSpreadDb": 1.737,
+        "missedMedianMarginDb": -2.729
+      },
+      "sampleTraces": [
+        {
+          "windowId": "dev/-5dB/036",
+          "snrDb": -5,
+          "band": 14,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.474,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.546,
+          "marginDb": -5.546,
+          "floorErrorDb": 2.776,
+          "peakToMeanDb": 10.998
+        },
+        {
+          "windowId": "dev/-10dB/026",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.206,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.447,
+          "marginDb": -5.447,
+          "floorErrorDb": 2.343,
+          "peakToMeanDb": 8.702
+        },
+        {
+          "windowId": "dev/-10dB/011",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.302,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.416,
+          "marginDb": -5.416,
+          "floorErrorDb": 2.535,
+          "peakToMeanDb": 7.122
+        },
+        {
+          "windowId": "dev/-10dB/030",
+          "snrDb": -10,
+          "band": 9,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.287,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.353,
+          "marginDb": -5.353,
+          "floorErrorDb": 2.163,
+          "peakToMeanDb": 8.624
+        },
+        {
+          "windowId": "dev/-10dB/009",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.294,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.312,
+          "marginDb": -5.312,
+          "floorErrorDb": 2.328,
+          "peakToMeanDb": 8.052
+        },
+        {
+          "windowId": "dev/-5dB/035",
+          "snrDb": -5,
+          "band": 15,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.343,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.304,
+          "marginDb": -5.304,
+          "floorErrorDb": 2.62,
+          "peakToMeanDb": 8.717
+        },
+        {
+          "windowId": "dev/-10dB/025",
+          "snrDb": -10,
+          "band": 10,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.349,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.279,
+          "marginDb": -5.279,
+          "floorErrorDb": 2.416,
+          "peakToMeanDb": 7.385
+        },
+        {
+          "windowId": "dev/-10dB/025",
+          "snrDb": -10,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.319,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.264,
+          "marginDb": -5.264,
+          "floorErrorDb": 2.416,
+          "peakToMeanDb": 7.957
+        },
+        {
+          "windowId": "dev/-10dB/005",
+          "snrDb": -10,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.372,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.221,
+          "marginDb": -5.221,
+          "floorErrorDb": 2.092,
+          "peakToMeanDb": 7.249
+        },
+        {
+          "windowId": "dev/+0dB/017",
+          "snrDb": 0,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.237,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.142,
+          "marginDb": -5.142,
+          "floorErrorDb": 2.996,
+          "peakToMeanDb": 9.992
+        },
+        {
+          "windowId": "dev/-5dB/036",
+          "snrDb": -5,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.379,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.135,
+          "marginDb": -5.135,
+          "floorErrorDb": 2.776,
+          "peakToMeanDb": 10.772
+        },
+        {
+          "windowId": "dev/-5dB/027",
+          "snrDb": -5,
+          "band": 6,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.257,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.118,
+          "marginDb": -5.118,
+          "floorErrorDb": 2.799,
+          "peakToMeanDb": 10.275
+        },
+        {
+          "windowId": "dev/-10dB/009",
+          "snrDb": -10,
+          "band": 12,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.475,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.096,
+          "marginDb": -5.096,
+          "floorErrorDb": 2.328,
+          "peakToMeanDb": 7.206
+        },
+        {
+          "windowId": "dev/-10dB/021",
+          "snrDb": -10,
+          "band": 5,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "tone",
+            "dutyCycle": 1,
+            "pulses": 0
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.09,
+          "marginDb": -5.09,
+          "floorErrorDb": 2.414,
+          "peakToMeanDb": 11.039
+        },
+        {
+          "windowId": "dev/-5dB/023",
+          "snrDb": -5,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.292,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.057,
+          "marginDb": -5.057,
+          "floorErrorDb": 2.789,
+          "peakToMeanDb": 9.176
+        },
+        {
+          "windowId": "dev/-10dB/023",
+          "snrDb": -10,
+          "band": 1,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.453,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.025,
+          "marginDb": -5.025,
+          "floorErrorDb": 1.3,
+          "peakToMeanDb": 9.133
+        },
+        {
+          "windowId": "dev/-10dB/017",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.416,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.017,
+          "marginDb": -5.017,
+          "floorErrorDb": 2.259,
+          "peakToMeanDb": 8.368
+        },
+        {
+          "windowId": "dev/+0dB/056",
+          "snrDb": 0,
+          "band": 14,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.229,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -2.005,
+          "marginDb": -5.005,
+          "floorErrorDb": 2.925,
+          "peakToMeanDb": 10.175
+        },
+        {
+          "windowId": "dev/-5dB/023",
+          "snrDb": -5,
+          "band": 1,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "tone",
+            "dutyCycle": 1,
+            "pulses": 0
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -1.982,
+          "marginDb": -4.982,
+          "floorErrorDb": 2.789,
+          "peakToMeanDb": 17.193
+        },
+        {
+          "windowId": "dev/-10dB/011",
+          "snrDb": -10,
+          "band": 10,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "tone",
+            "dutyCycle": 1,
+            "pulses": 0
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -1.937,
+          "marginDb": -4.937,
+          "floorErrorDb": 2.535,
+          "peakToMeanDb": 10.36
+        },
+        {
+          "windowId": "dev/+0dB/015",
+          "snrDb": 0,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.245,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -1.925,
+          "marginDb": -4.925,
+          "floorErrorDb": 2.808,
+          "peakToMeanDb": 12.548
+        },
+        {
+          "windowId": "dev/-10dB/005",
+          "snrDb": -10,
+          "band": 2,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "tone",
+            "dutyCycle": 1,
+            "pulses": 0
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -1.921,
+          "marginDb": -4.921,
+          "floorErrorDb": 2.092,
+          "peakToMeanDb": 13.411
+        },
+        {
+          "windowId": "dev/-5dB/027",
+          "snrDb": -5,
+          "band": 13,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "tone",
+            "dutyCycle": 1,
+            "pulses": 0
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -1.854,
+          "marginDb": -4.854,
+          "floorErrorDb": 2.799,
+          "peakToMeanDb": 17.266
+        },
+        {
+          "windowId": "dev/-10dB/030",
+          "snrDb": -10,
+          "band": 10,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.383,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": -1.848,
+          "marginDb": -4.848,
+          "floorErrorDb": 2.163,
+          "peakToMeanDb": 8.057
+        }
+      ],
+      "proposal": {
+        "source": "heuristic",
+        "operator": "narrowband-peak-statistic",
+        "diagnosis": [
+          "[narrowband-peak-statistic, 216 errors] Narrowband energy dilution: missed occupied bands show a peak-to-mean ratio of 12.5 dB vs 7.7 dB on vacant bands (+4.8 dB), i.e. the carrier is concentrated in a few of the 256 bins and averaging the whole band throws that gain away. 139 misses are at ≤-5 dB.",
+          "[adaptive-noise-floor, 202 errors] Noise-floor mismatch: assumed floor is off by 1.72 dB RMS (receiver drift); 202 of 277 errors occur in windows biased by >1 dB (false alarms cluster on hot windows, misses on cold windows)."
+        ],
+        "rationale": "Switch the band statistic from band-mean to peak-bin PSD (a matched statistic for narrowband carriers, ≈24 dB of processing gain at −10 dB in-band SNR) and recalibrate the margin above the extreme-value noise level (E[max] ≈ 7.9 dB over 256 bins). Threshold tuned on the miss/false-alarm residuals to margin 11.47 dB (calibration Pd 80.5%, Pfa 1.4% under a 5.0% design cap).",
+        "config": {
+          "generation": "Gen-1 narrowband-peak-statistic",
+          "windowLength": 0,
+          "subWindows": 1,
+          "integration": "average",
+          "taper": "rectangular",
+          "numSubBands": 16,
+          "bandStatistic": "peak",
+          "noiseFloor": {
+            "kind": "assumed",
+            "floorDb": -60
+          },
+          "threshold": {
+            "kind": "relative",
+            "marginDb": 11.475
+          },
+          "floorUncertaintyDb": 1
+        }
+      },
+      "candidate": {
+        "label": "Gen-1 narrowband-peak-statistic",
+        "dev": {
+          "pd": 0.805,
+          "pfa": 0.014,
+          "utility": 0.784,
+          "slices": [
+            {
+              "snrDb": -10,
+              "pd": 0.392,
+              "pfa": 0.015,
+              "tp": 31,
+              "occupied": 79,
+              "fp": 13,
+              "vacant": 881
+            },
+            {
+              "snrDb": -5,
+              "pd": 0.627,
+              "pfa": 0.003,
+              "tp": 42,
+              "occupied": 67,
+              "fp": 3,
+              "vacant": 893
+            },
+            {
+              "snrDb": 0,
+              "pd": 0.915,
+              "pfa": 0.011,
+              "tp": 75,
+              "occupied": 82,
+              "fp": 10,
+              "vacant": 878
+            },
+            {
+              "snrDb": 5,
+              "pd": 1,
+              "pfa": 0.021,
+              "tp": 83,
+              "occupied": 83,
+              "fp": 18,
+              "vacant": 877
+            },
+            {
+              "snrDb": 10,
+              "pd": 1,
+              "pfa": 0.021,
+              "tp": 99,
+              "occupied": 99,
+              "fp": 18,
+              "vacant": 861
+            }
+          ]
+        },
+        "decision": "accepted",
+        "reason": "utility 0.452 → 0.784 (+0.332), Pfa 1.4% ≤ 10.0%",
+        "hotSwap": [
+          "disposed fiber \"Gen-0 Baseline Energy Detector\"",
+          "mounted candidate \"Gen-1 narrowband-peak-statistic\" onto ctx.detector",
+          "kept candidate"
+        ]
+      }
+    },
+    {
+      "generation": 1,
+      "label": "Gen-1 narrowband-peak-statistic",
+      "config": {
+        "generation": "Gen-1 narrowband-peak-statistic",
+        "windowLength": 0,
+        "subWindows": 1,
+        "integration": "average",
+        "taper": "rectangular",
+        "numSubBands": 16,
+        "bandStatistic": "peak",
+        "noiseFloor": {
+          "kind": "assumed",
+          "floorDb": -60
+        },
+        "threshold": {
+          "kind": "relative",
+          "marginDb": 11.475
+        },
+        "floorUncertaintyDb": 1
+      },
+      "dev": {
+        "pd": 0.805,
+        "pfa": 0.014,
+        "utility": 0.784,
+        "slices": [
+          {
+            "snrDb": -10,
+            "pd": 0.392,
+            "pfa": 0.015,
+            "tp": 31,
+            "occupied": 79,
+            "fp": 13,
+            "vacant": 881
+          },
+          {
+            "snrDb": -5,
+            "pd": 0.627,
+            "pfa": 0.003,
+            "tp": 42,
+            "occupied": 67,
+            "fp": 3,
+            "vacant": 893
+          },
+          {
+            "snrDb": 0,
+            "pd": 0.915,
+            "pfa": 0.011,
+            "tp": 75,
+            "occupied": 82,
+            "fp": 10,
+            "vacant": 878
+          },
+          {
+            "snrDb": 5,
+            "pd": 1,
+            "pfa": 0.021,
+            "tp": 83,
+            "occupied": 83,
+            "fp": 18,
+            "vacant": 877
+          },
+          {
+            "snrDb": 10,
+            "pd": 1,
+            "pfa": 0.021,
+            "tp": 99,
+            "occupied": 99,
+            "fp": 18,
+            "vacant": 861
+          }
+        ]
+      },
+      "failures": {
+        "missedDetections": 80,
+        "falseAlarms": 62,
+        "missedLowSnr": 73,
+        "falseAlarmsEmptyWindows": 14,
+        "falseAlarmsAdjacent": 9,
+        "missedBySlice": {
+          "-10dB": 48,
+          "-5dB": 25,
+          "0dB": 7,
+          "5dB": 0,
+          "10dB": 0
+        },
+        "falseAlarmsBySlice": {
+          "-10dB": 13,
+          "-5dB": 3,
+          "0dB": 10,
+          "5dB": 18,
+          "10dB": 18
+        },
+        "missedByKind": {
+          "tone": 9,
+          "burst": 71
+        },
+        "floorRmsErrorDb": 1.72,
+        "errorsInBiasedWindows": 119,
+        "missedPeakToMeanDb": 9.059,
+        "vacantPeakToMeanDb": 7.722,
+        "vacantStatisticSpreadDb": 1.901,
+        "missedMedianMarginDb": -2.966
+      },
+      "sampleTraces": [
+        {
+          "windowId": "dev/-10dB/011",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.302,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 4.706,
+          "marginDb": -6.769,
+          "floorErrorDb": 2.535,
+          "peakToMeanDb": 7.122
+        },
+        {
+          "windowId": "dev/-10dB/005",
+          "snrDb": -10,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.372,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 5.028,
+          "marginDb": -6.447,
+          "floorErrorDb": 2.092,
+          "peakToMeanDb": 7.249
+        },
+        {
+          "windowId": "dev/-10dB/025",
+          "snrDb": -10,
+          "band": 10,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.349,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 5.107,
+          "marginDb": -6.368,
+          "floorErrorDb": 2.416,
+          "peakToMeanDb": 7.385
+        },
+        {
+          "windowId": "dev/-10dB/009",
+          "snrDb": -10,
+          "band": 12,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.475,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 5.111,
+          "marginDb": -6.364,
+          "floorErrorDb": 2.328,
+          "peakToMeanDb": 7.206
+        },
+        {
+          "windowId": "dev/-10dB/058",
+          "snrDb": -10,
+          "band": 6,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.251,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 5.225,
+          "marginDb": -6.25,
+          "floorErrorDb": 1.469,
+          "peakToMeanDb": 6.59
+        },
+        {
+          "windowId": "dev/-10dB/030",
+          "snrDb": -10,
+          "band": 6,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.451,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 5.453,
+          "marginDb": -6.022,
+          "floorErrorDb": 2.163,
+          "peakToMeanDb": 7.063
+        },
+        {
+          "windowId": "dev/-10dB/025",
+          "snrDb": -10,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.319,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 5.694,
+          "marginDb": -5.781,
+          "floorErrorDb": 2.416,
+          "peakToMeanDb": 7.957
+        },
+        {
+          "windowId": "dev/-10dB/009",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.294,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 5.74,
+          "marginDb": -5.735,
+          "floorErrorDb": 2.328,
+          "peakToMeanDb": 8.052
+        },
+        {
+          "windowId": "dev/-10dB/020",
+          "snrDb": -10,
+          "band": 14,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.223,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 5.88,
+          "marginDb": -5.595,
+          "floorErrorDb": 1.439,
+          "peakToMeanDb": 7.339
+        },
+        {
+          "windowId": "dev/-10dB/023",
+          "snrDb": -10,
+          "band": 14,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.477,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.039,
+          "marginDb": -5.436,
+          "floorErrorDb": 1.3,
+          "peakToMeanDb": 7.139
+        },
+        {
+          "windowId": "dev/-10dB/045",
+          "snrDb": -10,
+          "band": 0,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.437,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.116,
+          "marginDb": -5.359,
+          "floorErrorDb": 1.047,
+          "peakToMeanDb": 7.265
+        },
+        {
+          "windowId": "dev/-10dB/040",
+          "snrDb": -10,
+          "band": 2,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.449,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.144,
+          "marginDb": -5.331,
+          "floorErrorDb": 1.623,
+          "peakToMeanDb": 7.398
+        },
+        {
+          "windowId": "dev/-10dB/027",
+          "snrDb": -10,
+          "band": 0,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.253,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.2,
+          "marginDb": -5.275,
+          "floorErrorDb": 1.265,
+          "peakToMeanDb": 7.368
+        },
+        {
+          "windowId": "dev/-10dB/030",
+          "snrDb": -10,
+          "band": 10,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.383,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.208,
+          "marginDb": -5.267,
+          "floorErrorDb": 2.163,
+          "peakToMeanDb": 8.057
+        },
+        {
+          "windowId": "dev/-10dB/026",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.206,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.255,
+          "marginDb": -5.22,
+          "floorErrorDb": 2.343,
+          "peakToMeanDb": 8.702
+        },
+        {
+          "windowId": "dev/-10dB/030",
+          "snrDb": -10,
+          "band": 9,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.287,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.272,
+          "marginDb": -5.203,
+          "floorErrorDb": 2.163,
+          "peakToMeanDb": 8.624
+        },
+        {
+          "windowId": "dev/-10dB/017",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.416,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.35,
+          "marginDb": -5.125,
+          "floorErrorDb": 2.259,
+          "peakToMeanDb": 8.368
+        },
+        {
+          "windowId": "dev/-5dB/035",
+          "snrDb": -5,
+          "band": 15,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.343,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.413,
+          "marginDb": -5.062,
+          "floorErrorDb": 2.62,
+          "peakToMeanDb": 8.717
+        },
+        {
+          "windowId": "dev/-5dB/005",
+          "snrDb": -5,
+          "band": 6,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.262,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.512,
+          "marginDb": -4.963,
+          "floorErrorDb": 1.341,
+          "peakToMeanDb": 7.481
+        },
+        {
+          "windowId": "dev/-10dB/006",
+          "snrDb": -10,
+          "band": 11,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.35,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.556,
+          "marginDb": -4.919,
+          "floorErrorDb": 0.975,
+          "peakToMeanDb": 7.282
+        },
+        {
+          "windowId": "dev/-10dB/038",
+          "snrDb": -10,
+          "band": 2,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.245,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.607,
+          "marginDb": -4.868,
+          "floorErrorDb": 1.839,
+          "peakToMeanDb": 8.12
+        },
+        {
+          "windowId": "dev/+0dB/051",
+          "snrDb": 0,
+          "band": 1,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.204,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.035,
+          "marginDb": -4.44,
+          "floorErrorDb": 2.59,
+          "peakToMeanDb": 8.844
+        },
+        {
+          "windowId": "dev/-10dB/023",
+          "snrDb": -10,
+          "band": 1,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.453,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.108,
+          "marginDb": -4.367,
+          "floorErrorDb": 1.3,
+          "peakToMeanDb": 9.133
+        },
+        {
+          "windowId": "dev/-5dB/023",
+          "snrDb": -5,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.292,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.12,
+          "marginDb": -4.355,
+          "floorErrorDb": 2.789,
+          "peakToMeanDb": 9.176
+        }
+      ],
+      "proposal": {
+        "source": "heuristic",
+        "operator": "adaptive-noise-floor",
+        "diagnosis": [
+          "[adaptive-noise-floor, 119 errors] Noise-floor mismatch: assumed floor is off by 1.72 dB RMS (receiver drift); 119 of 142 errors occur in windows biased by >1 dB (false alarms cluster on hot windows, misses on cold windows).",
+          "[multi-window-integration, 73 errors] Statistic variance: a single-bin periodogram is χ²₂-distributed (≈5.6 dB std), giving a vacant-cell spread of 1.90 dB that forces a high margin; 73 low-SNR misses sit a median 2.97 dB below threshold."
+        ],
+        "rationale": "Replace the assumed floor with a per-window median sub-band noise-floor estimate (floor RMS error median=0.10 dB, P37.5=0.10 dB, P25=0.17 dB) and express the threshold as a margin above that floor (CFAR-style), so drift cancels out. Threshold tuned on the miss/false-alarm residuals to margin 9.83 dB (calibration Pd 87.1%, Pfa 1.5% under a 5.0% design cap).",
+        "config": {
+          "generation": "Gen-2 adaptive-noise-floor",
+          "windowLength": 0,
+          "subWindows": 1,
+          "integration": "average",
+          "taper": "rectangular",
+          "numSubBands": 16,
+          "bandStatistic": "peak",
+          "noiseFloor": {
+            "kind": "median"
+          },
+          "threshold": {
+            "kind": "relative",
+            "marginDb": 9.834
+          },
+          "floorUncertaintyDb": 1
+        }
+      },
+      "candidate": {
+        "label": "Gen-2 adaptive-noise-floor",
+        "dev": {
+          "pd": 0.871,
+          "pfa": 0.015,
+          "utility": 0.848,
+          "slices": [
+            {
+              "snrDb": -10,
+              "pd": 0.506,
+              "pfa": 0.017,
+              "tp": 40,
+              "occupied": 79,
+              "fp": 15,
+              "vacant": 881
+            },
+            {
+              "snrDb": -5,
+              "pd": 0.806,
+              "pfa": 0.015,
+              "tp": 54,
+              "occupied": 67,
+              "fp": 13,
+              "vacant": 893
+            },
+            {
+              "snrDb": 0,
+              "pd": 0.988,
+              "pfa": 0.009,
+              "tp": 81,
+              "occupied": 82,
+              "fp": 8,
+              "vacant": 878
+            },
+            {
+              "snrDb": 5,
+              "pd": 1,
+              "pfa": 0.018,
+              "tp": 83,
+              "occupied": 83,
+              "fp": 16,
+              "vacant": 877
+            },
+            {
+              "snrDb": 10,
+              "pd": 1,
+              "pfa": 0.017,
+              "tp": 99,
+              "occupied": 99,
+              "fp": 15,
+              "vacant": 861
+            }
+          ]
+        },
+        "decision": "accepted",
+        "reason": "utility 0.784 → 0.848 (+0.064), Pfa 1.5% ≤ 10.0%",
+        "hotSwap": [
+          "disposed fiber \"Gen-1 narrowband-peak-statistic\"",
+          "mounted candidate \"Gen-2 adaptive-noise-floor\" onto ctx.detector",
+          "kept candidate"
+        ]
+      }
+    },
+    {
+      "generation": 2,
+      "label": "Gen-2 adaptive-noise-floor",
+      "config": {
+        "generation": "Gen-2 adaptive-noise-floor",
+        "windowLength": 0,
+        "subWindows": 1,
+        "integration": "average",
+        "taper": "rectangular",
+        "numSubBands": 16,
+        "bandStatistic": "peak",
+        "noiseFloor": {
+          "kind": "median"
+        },
+        "threshold": {
+          "kind": "relative",
+          "marginDb": 9.834
+        },
+        "floorUncertaintyDb": 1
+      },
+      "dev": {
+        "pd": 0.871,
+        "pfa": 0.015,
+        "utility": 0.848,
+        "slices": [
+          {
+            "snrDb": -10,
+            "pd": 0.506,
+            "pfa": 0.017,
+            "tp": 40,
+            "occupied": 79,
+            "fp": 15,
+            "vacant": 881
+          },
+          {
+            "snrDb": -5,
+            "pd": 0.806,
+            "pfa": 0.015,
+            "tp": 54,
+            "occupied": 67,
+            "fp": 13,
+            "vacant": 893
+          },
+          {
+            "snrDb": 0,
+            "pd": 0.988,
+            "pfa": 0.009,
+            "tp": 81,
+            "occupied": 82,
+            "fp": 8,
+            "vacant": 878
+          },
+          {
+            "snrDb": 5,
+            "pd": 1,
+            "pfa": 0.018,
+            "tp": 83,
+            "occupied": 83,
+            "fp": 16,
+            "vacant": 877
+          },
+          {
+            "snrDb": 10,
+            "pd": 1,
+            "pfa": 0.017,
+            "tp": 99,
+            "occupied": 99,
+            "fp": 15,
+            "vacant": 861
+          }
+        ]
+      },
+      "failures": {
+        "missedDetections": 53,
+        "falseAlarms": 67,
+        "missedLowSnr": 52,
+        "falseAlarmsEmptyWindows": 23,
+        "falseAlarmsAdjacent": 13,
+        "missedBySlice": {
+          "-10dB": 39,
+          "-5dB": 13,
+          "0dB": 1,
+          "5dB": 0,
+          "10dB": 0
+        },
+        "falseAlarmsBySlice": {
+          "-10dB": 15,
+          "-5dB": 13,
+          "0dB": 8,
+          "5dB": 16,
+          "10dB": 15
+        },
+        "missedByKind": {
+          "tone": 0,
+          "burst": 53
+        },
+        "floorRmsErrorDb": 0.095,
+        "errorsInBiasedWindows": 0,
+        "missedPeakToMeanDb": 8.266,
+        "vacantPeakToMeanDb": 7.718,
+        "vacantStatisticSpreadDb": 0.865,
+        "missedMedianMarginDb": -1.412
+      },
+      "sampleTraces": [
+        {
+          "windowId": "dev/-10dB/058",
+          "snrDb": -10,
+          "band": 6,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.251,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.561,
+          "marginDb": -3.273,
+          "floorErrorDb": 0.133,
+          "peakToMeanDb": 6.59
+        },
+        {
+          "windowId": "dev/-10dB/044",
+          "snrDb": -10,
+          "band": 11,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.273,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 6.766,
+          "marginDb": -3.068,
+          "floorErrorDb": 0.043,
+          "peakToMeanDb": 6.71
+        },
+        {
+          "windowId": "dev/-10dB/018",
+          "snrDb": -10,
+          "band": 10,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.333,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.027,
+          "marginDb": -2.807,
+          "floorErrorDb": 0.006,
+          "peakToMeanDb": 7.078
+        },
+        {
+          "windowId": "dev/-5dB/007",
+          "snrDb": -5,
+          "band": 5,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.234,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.084,
+          "marginDb": -2.75,
+          "floorErrorDb": 0.001,
+          "peakToMeanDb": 7.09
+        },
+        {
+          "windowId": "dev/-10dB/005",
+          "snrDb": -10,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.372,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.141,
+          "marginDb": -2.693,
+          "floorErrorDb": -0.02,
+          "peakToMeanDb": 7.249
+        },
+        {
+          "windowId": "dev/-10dB/020",
+          "snrDb": -10,
+          "band": 14,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.223,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.201,
+          "marginDb": -2.633,
+          "floorErrorDb": 0.118,
+          "peakToMeanDb": 7.339
+        },
+        {
+          "windowId": "dev/-10dB/045",
+          "snrDb": -10,
+          "band": 0,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.437,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.264,
+          "marginDb": -2.57,
+          "floorErrorDb": -0.102,
+          "peakToMeanDb": 7.265
+        },
+        {
+          "windowId": "dev/-10dB/023",
+          "snrDb": -10,
+          "band": 14,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.477,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.282,
+          "marginDb": -2.552,
+          "floorErrorDb": 0.058,
+          "peakToMeanDb": 7.139
+        },
+        {
+          "windowId": "dev/-10dB/011",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.302,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.323,
+          "marginDb": -2.511,
+          "floorErrorDb": -0.082,
+          "peakToMeanDb": 7.122
+        },
+        {
+          "windowId": "dev/-10dB/009",
+          "snrDb": -10,
+          "band": 12,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.475,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.417,
+          "marginDb": -2.417,
+          "floorErrorDb": 0.021,
+          "peakToMeanDb": 7.206
+        },
+        {
+          "windowId": "dev/-10dB/027",
+          "snrDb": -10,
+          "band": 0,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.253,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.439,
+          "marginDb": -2.395,
+          "floorErrorDb": 0.026,
+          "peakToMeanDb": 7.368
+        },
+        {
+          "windowId": "dev/-10dB/033",
+          "snrDb": -10,
+          "band": 15,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.316,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.477,
+          "marginDb": -2.357,
+          "floorErrorDb": 0.006,
+          "peakToMeanDb": 7.428
+        },
+        {
+          "windowId": "dev/-10dB/025",
+          "snrDb": -10,
+          "band": 10,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.349,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.489,
+          "marginDb": -2.345,
+          "floorErrorDb": 0.033,
+          "peakToMeanDb": 7.385
+        },
+        {
+          "windowId": "dev/-10dB/006",
+          "snrDb": -10,
+          "band": 11,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.35,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.526,
+          "marginDb": -2.308,
+          "floorErrorDb": 0.004,
+          "peakToMeanDb": 7.282
+        },
+        {
+          "windowId": "dev/-10dB/040",
+          "snrDb": -10,
+          "band": 2,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.449,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.56,
+          "marginDb": -2.274,
+          "floorErrorDb": 0.207,
+          "peakToMeanDb": 7.398
+        },
+        {
+          "windowId": "dev/-10dB/030",
+          "snrDb": -10,
+          "band": 6,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.451,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.666,
+          "marginDb": -2.168,
+          "floorErrorDb": -0.05,
+          "peakToMeanDb": 7.063
+        },
+        {
+          "windowId": "dev/-5dB/005",
+          "snrDb": -5,
+          "band": 6,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.262,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.792,
+          "marginDb": -2.042,
+          "floorErrorDb": 0.061,
+          "peakToMeanDb": 7.481
+        },
+        {
+          "windowId": "dev/-10dB/022",
+          "snrDb": -10,
+          "band": 0,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.451,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 7.908,
+          "marginDb": -1.926,
+          "floorErrorDb": -0.059,
+          "peakToMeanDb": 7.521
+        },
+        {
+          "windowId": "dev/-5dB/045",
+          "snrDb": -5,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.255,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 8.028,
+          "marginDb": -1.806,
+          "floorErrorDb": 0.143,
+          "peakToMeanDb": 7.841
+        },
+        {
+          "windowId": "dev/-10dB/009",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.294,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 8.047,
+          "marginDb": -1.787,
+          "floorErrorDb": 0.021,
+          "peakToMeanDb": 8.052
+        },
+        {
+          "windowId": "dev/-10dB/025",
+          "snrDb": -10,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.319,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 8.076,
+          "marginDb": -1.758,
+          "floorErrorDb": 0.033,
+          "peakToMeanDb": 7.957
+        },
+        {
+          "windowId": "dev/-10dB/047",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.305,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 8.136,
+          "marginDb": -1.698,
+          "floorErrorDb": 0.065,
+          "peakToMeanDb": 8.24
+        },
+        {
+          "windowId": "dev/-10dB/057",
+          "snrDb": -10,
+          "band": 1,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.341,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 8.215,
+          "marginDb": -1.619,
+          "floorErrorDb": -0.017,
+          "peakToMeanDb": 8.575
+        },
+        {
+          "windowId": "dev/-10dB/004",
+          "snrDb": -10,
+          "band": 14,
+          "type": "false_alarm",
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 11.427,
+          "marginDb": 1.593,
+          "floorErrorDb": 0.018,
+          "peakToMeanDb": 11.037
+        }
+      ],
+      "proposal": {
+        "source": "heuristic",
+        "operator": "multi-window-integration",
+        "diagnosis": [
+          "[multi-window-integration, 52 errors] Statistic variance: a single-bin periodogram is χ²₂-distributed (≈5.6 dB std), giving a vacant-cell spread of 0.86 dB that forces a high margin; 52 low-SNR misses sit a median 1.41 dB below threshold."
+        ],
+        "rationale": "Integrate the signal window as 4 Welch sub-windows (variance ↓ by √4) while keeping enough per-bin coherent gain for tones; keep the rectangular taper: only 19.4% of false alarms are adjacent to occupied bands, so leakage is not a failure mode here and Hann/Hamming would cost ~1.8/1.3 dB of ENBW on tone peaks. Threshold tuned on the miss/false-alarm residuals to margin 5.88 dB (calibration Pd 86.8%, Pfa 0.7% under a 5.0% design cap).",
+        "config": {
+          "generation": "Gen-3 multi-window-integration",
+          "windowLength": 0,
+          "subWindows": 4,
+          "integration": "average",
+          "taper": "rectangular",
+          "numSubBands": 16,
+          "bandStatistic": "peak",
+          "noiseFloor": {
+            "kind": "median"
+          },
+          "threshold": {
+            "kind": "relative",
+            "marginDb": 5.879
+          },
+          "floorUncertaintyDb": 1
+        }
+      },
+      "candidate": {
+        "label": "Gen-3 multi-window-integration",
+        "dev": {
+          "pd": 0.868,
+          "pfa": 0.007,
+          "utility": 0.858,
+          "slices": [
+            {
+              "snrDb": -10,
+              "pd": 0.481,
+              "pfa": 0.007,
+              "tp": 38,
+              "occupied": 79,
+              "fp": 6,
+              "vacant": 881
+            },
+            {
+              "snrDb": -5,
+              "pd": 0.806,
+              "pfa": 0.006,
+              "tp": 54,
+              "occupied": 67,
+              "fp": 5,
+              "vacant": 893
+            },
+            {
+              "snrDb": 0,
+              "pd": 1,
+              "pfa": 0.009,
+              "tp": 82,
+              "occupied": 82,
+              "fp": 8,
+              "vacant": 878
+            },
+            {
+              "snrDb": 5,
+              "pd": 1,
+              "pfa": 0.007,
+              "tp": 83,
+              "occupied": 83,
+              "fp": 6,
+              "vacant": 877
+            },
+            {
+              "snrDb": 10,
+              "pd": 1,
+              "pfa": 0.007,
+              "tp": 99,
+              "occupied": 99,
+              "fp": 6,
+              "vacant": 861
+            }
+          ]
+        },
+        "decision": "accepted",
+        "reason": "utility 0.848 → 0.858 (+0.010), Pfa 0.7% ≤ 10.0%",
+        "hotSwap": [
+          "disposed fiber \"Gen-2 adaptive-noise-floor\"",
+          "mounted candidate \"Gen-3 multi-window-integration\" onto ctx.detector",
+          "kept candidate"
+        ]
+      }
+    },
+    {
+      "generation": 3,
+      "label": "Gen-3 multi-window-integration",
+      "config": {
+        "generation": "Gen-3 multi-window-integration",
+        "windowLength": 0,
+        "subWindows": 4,
+        "integration": "average",
+        "taper": "rectangular",
+        "numSubBands": 16,
+        "bandStatistic": "peak",
+        "noiseFloor": {
+          "kind": "median"
+        },
+        "threshold": {
+          "kind": "relative",
+          "marginDb": 5.879
+        },
+        "floorUncertaintyDb": 1
+      },
+      "dev": {
+        "pd": 0.868,
+        "pfa": 0.007,
+        "utility": 0.858,
+        "slices": [
+          {
+            "snrDb": -10,
+            "pd": 0.481,
+            "pfa": 0.007,
+            "tp": 38,
+            "occupied": 79,
+            "fp": 6,
+            "vacant": 881
+          },
+          {
+            "snrDb": -5,
+            "pd": 0.806,
+            "pfa": 0.006,
+            "tp": 54,
+            "occupied": 67,
+            "fp": 5,
+            "vacant": 893
+          },
+          {
+            "snrDb": 0,
+            "pd": 1,
+            "pfa": 0.009,
+            "tp": 82,
+            "occupied": 82,
+            "fp": 8,
+            "vacant": 878
+          },
+          {
+            "snrDb": 5,
+            "pd": 1,
+            "pfa": 0.007,
+            "tp": 83,
+            "occupied": 83,
+            "fp": 6,
+            "vacant": 877
+          },
+          {
+            "snrDb": 10,
+            "pd": 1,
+            "pfa": 0.007,
+            "tp": 99,
+            "occupied": 99,
+            "fp": 6,
+            "vacant": 861
+          }
+        ]
+      },
+      "failures": {
+        "missedDetections": 54,
+        "falseAlarms": 31,
+        "missedLowSnr": 54,
+        "falseAlarmsEmptyWindows": 14,
+        "falseAlarmsAdjacent": 5,
+        "missedBySlice": {
+          "-10dB": 41,
+          "-5dB": 13,
+          "0dB": 0,
+          "5dB": 0,
+          "10dB": 0
+        },
+        "falseAlarmsBySlice": {
+          "-10dB": 6,
+          "-5dB": 5,
+          "0dB": 8,
+          "5dB": 6,
+          "10dB": 6
+        },
+        "missedByKind": {
+          "tone": 4,
+          "burst": 50
+        },
+        "floorRmsErrorDb": 0.097,
+        "errorsInBiasedWindows": 0,
+        "missedPeakToMeanDb": 4.324,
+        "vacantPeakToMeanDb": 3.95,
+        "vacantStatisticSpreadDb": 0.699,
+        "missedMedianMarginDb": -1.492
+      },
+      "sampleTraces": [
+        {
+          "windowId": "dev/-10dB/047",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.305,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 2.443,
+          "marginDb": -3.436,
+          "floorErrorDb": 0.056,
+          "peakToMeanDb": 2.574
+        },
+        {
+          "windowId": "dev/-5dB/005",
+          "snrDb": -5,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.351,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.277,
+          "marginDb": -2.602,
+          "floorErrorDb": 0.095,
+          "peakToMeanDb": 3.471
+        },
+        {
+          "windowId": "dev/-10dB/020",
+          "snrDb": -10,
+          "band": 14,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.223,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.435,
+          "marginDb": -2.444,
+          "floorErrorDb": 0.151,
+          "peakToMeanDb": 3.563
+        },
+        {
+          "windowId": "dev/-10dB/035",
+          "snrDb": -10,
+          "band": 5,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.285,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.685,
+          "marginDb": -2.194,
+          "floorErrorDb": 0.023,
+          "peakToMeanDb": 3.424
+        },
+        {
+          "windowId": "dev/-10dB/047",
+          "snrDb": -10,
+          "band": 3,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.202,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.689,
+          "marginDb": -2.19,
+          "floorErrorDb": 0.056,
+          "peakToMeanDb": 3.647
+        },
+        {
+          "windowId": "dev/-10dB/044",
+          "snrDb": -10,
+          "band": 11,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.273,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.702,
+          "marginDb": -2.177,
+          "floorErrorDb": 0.049,
+          "peakToMeanDb": 3.634
+        },
+        {
+          "windowId": "dev/-10dB/011",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.302,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.763,
+          "marginDb": -2.116,
+          "floorErrorDb": -0.035,
+          "peakToMeanDb": 3.535
+        },
+        {
+          "windowId": "dev/-10dB/027",
+          "snrDb": -10,
+          "band": 0,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.253,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.775,
+          "marginDb": -2.104,
+          "floorErrorDb": 0.036,
+          "peakToMeanDb": 3.708
+        },
+        {
+          "windowId": "dev/-5dB/020",
+          "snrDb": -5,
+          "band": 5,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.219,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.811,
+          "marginDb": -2.068,
+          "floorErrorDb": 0.083,
+          "peakToMeanDb": 3.603
+        },
+        {
+          "windowId": "dev/-10dB/023",
+          "snrDb": -10,
+          "band": 1,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.453,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.835,
+          "marginDb": -2.044,
+          "floorErrorDb": 0.08,
+          "peakToMeanDb": 4.644
+        },
+        {
+          "windowId": "dev/-10dB/032",
+          "snrDb": -10,
+          "band": 6,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.428,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.843,
+          "marginDb": -2.036,
+          "floorErrorDb": 0.041,
+          "peakToMeanDb": 3.837
+        },
+        {
+          "windowId": "dev/-10dB/033",
+          "snrDb": -10,
+          "band": 15,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.316,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.869,
+          "marginDb": -2.01,
+          "floorErrorDb": -0.006,
+          "peakToMeanDb": 3.772
+        },
+        {
+          "windowId": "dev/-10dB/009",
+          "snrDb": -10,
+          "band": 4,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.294,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.939,
+          "marginDb": -1.94,
+          "floorErrorDb": 0.012,
+          "peakToMeanDb": 3.949
+        },
+        {
+          "windowId": "dev/-10dB/018",
+          "snrDb": -10,
+          "band": 10,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.333,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.941,
+          "marginDb": -1.938,
+          "floorErrorDb": -0.008,
+          "peakToMeanDb": 3.943
+        },
+        {
+          "windowId": "dev/-10dB/025",
+          "snrDb": -10,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.319,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.969,
+          "marginDb": -1.91,
+          "floorErrorDb": 0.031,
+          "peakToMeanDb": 3.825
+        },
+        {
+          "windowId": "dev/-10dB/005",
+          "snrDb": -10,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.372,
+            "pulses": 2
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.982,
+          "marginDb": -1.897,
+          "floorErrorDb": -0.012,
+          "peakToMeanDb": 3.927
+        },
+        {
+          "windowId": "dev/-10dB/058",
+          "snrDb": -10,
+          "band": 6,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.251,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 3.999,
+          "marginDb": -1.88,
+          "floorErrorDb": 0.132,
+          "peakToMeanDb": 4.023
+        },
+        {
+          "windowId": "dev/-10dB/028",
+          "snrDb": -10,
+          "band": 1,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.415,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 4.03,
+          "marginDb": -1.849,
+          "floorErrorDb": 0.064,
+          "peakToMeanDb": 4.061
+        },
+        {
+          "windowId": "dev/-10dB/057",
+          "snrDb": -10,
+          "band": 1,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.341,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 4.032,
+          "marginDb": -1.847,
+          "floorErrorDb": -0.016,
+          "peakToMeanDb": 4.375
+        },
+        {
+          "windowId": "dev/-10dB/030",
+          "snrDb": -10,
+          "band": 10,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.383,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 4.115,
+          "marginDb": -1.764,
+          "floorErrorDb": -0.052,
+          "peakToMeanDb": 3.771
+        },
+        {
+          "windowId": "dev/-10dB/023",
+          "snrDb": -10,
+          "band": 14,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.477,
+            "pulses": 3
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 4.16,
+          "marginDb": -1.719,
+          "floorErrorDb": 0.08,
+          "peakToMeanDb": 4.094
+        },
+        {
+          "windowId": "dev/-10dB/016",
+          "snrDb": -10,
+          "band": 12,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.293,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 4.165,
+          "marginDb": -1.714,
+          "floorErrorDb": 0.033,
+          "peakToMeanDb": 4.122
+        },
+        {
+          "windowId": "dev/-10dB/042",
+          "snrDb": -10,
+          "band": 9,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.365,
+            "pulses": 1
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 4.177,
+          "marginDb": -1.702,
+          "floorErrorDb": -0.068,
+          "peakToMeanDb": 3.775
+        },
+        {
+          "windowId": "dev/-5dB/045",
+          "snrDb": -5,
+          "band": 8,
+          "type": "missed_detection",
+          "emitter": {
+            "kind": "burst",
+            "dutyCycle": 0.255,
+            "pulses": 4
+          },
+          "emptyWindow": false,
+          "adjacentToOccupied": false,
+          "statisticSnrDb": 4.226,
+          "marginDb": -1.653,
+          "floorErrorDb": 0.144,
+          "peakToMeanDb": 4.018
+        }
+      ]
+    }
+  ],
+  "final": {
+    "label": "Gen-3 multi-window-integration",
+    "config": {
+      "generation": "Gen-3 multi-window-integration",
+      "windowLength": 0,
+      "subWindows": 4,
+      "integration": "average",
+      "taper": "rectangular",
+      "numSubBands": 16,
+      "bandStatistic": "peak",
+      "noiseFloor": {
+        "kind": "median"
+      },
+      "threshold": {
+        "kind": "relative",
+        "marginDb": 5.879
+      },
+      "floorUncertaintyDb": 1
+    },
+    "dev": {
+      "pd": 0.868,
+      "pfa": 0.007,
+      "utility": 0.858,
+      "slices": [
+        {
+          "snrDb": -10,
+          "pd": 0.481,
+          "pfa": 0.007,
+          "tp": 38,
+          "occupied": 79,
+          "fp": 6,
+          "vacant": 881
+        },
+        {
+          "snrDb": -5,
+          "pd": 0.806,
+          "pfa": 0.006,
+          "tp": 54,
+          "occupied": 67,
+          "fp": 5,
+          "vacant": 893
+        },
+        {
+          "snrDb": 0,
+          "pd": 1,
+          "pfa": 0.009,
+          "tp": 82,
+          "occupied": 82,
+          "fp": 8,
+          "vacant": 878
+        },
+        {
+          "snrDb": 5,
+          "pd": 1,
+          "pfa": 0.007,
+          "tp": 83,
+          "occupied": 83,
+          "fp": 6,
+          "vacant": 877
+        },
+        {
+          "snrDb": 10,
+          "pd": 1,
+          "pfa": 0.007,
+          "tp": 99,
+          "occupied": 99,
+          "fp": 6,
+          "vacant": 861
+        }
+      ]
+    },
+    "test": {
+      "pd": 0.857,
+      "pfa": 0.008,
+      "utility": 0.845,
+      "slices": [
+        {
+          "snrDb": -10,
+          "pd": 0.468,
+          "pfa": 0.009,
+          "tp": 37,
+          "occupied": 79,
+          "fp": 8,
+          "vacant": 881
+        },
+        {
+          "snrDb": -5,
+          "pd": 0.741,
+          "pfa": 0.007,
+          "tp": 60,
+          "occupied": 81,
+          "fp": 6,
+          "vacant": 879
+        },
+        {
+          "snrDb": 0,
+          "pd": 1,
+          "pfa": 0.009,
+          "tp": 100,
+          "occupied": 100,
+          "fp": 8,
+          "vacant": 860
+        },
+        {
+          "snrDb": 5,
+          "pd": 1,
+          "pfa": 0.002,
+          "tp": 95,
+          "occupied": 95,
+          "fp": 2,
+          "vacant": 865
+        },
+        {
+          "snrDb": 10,
+          "pd": 1,
+          "pfa": 0.011,
+          "tp": 86,
+          "occupied": 86,
+          "fp": 10,
+          "vacant": 874
+        }
+      ]
+    }
+  }
+}

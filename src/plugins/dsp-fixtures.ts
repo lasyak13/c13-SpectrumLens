@@ -19,7 +19,7 @@ declare module 'cordis' {
 // Types
 // ---------------------------------------------------------------------------
 
-export type TaperName = 'rectangular' | 'hann'
+export type TaperName = 'rectangular' | 'hann' | 'hamming' | 'blackman'
 
 export interface PsdOptions {
   /** FFT length per segment (power of two). Defaults to the largest power of two ≤ sample count. */
@@ -28,6 +28,11 @@ export interface PsdOptions {
   segments?: number
   /** Taper applied to each segment. */
   taper?: TaperName
+  /**
+   * How per-segment periodograms are combined: `mean` (Welch/Bartlett averaging, lowers
+   * variance) or `max` (max-hold, keeps short bursts that are on in only some segments).
+   */
+  combine?: 'mean' | 'max'
 }
 
 export interface PsdResult {
@@ -55,6 +60,12 @@ export interface SubBand {
   meanPsdDb: number
   /** Integrated band power, dB. */
   powerDb: number
+  /** Largest single-bin PSD inside the band, linear power/Hz (narrowband matched statistic). */
+  peakPsd: number
+  /** Largest single-bin PSD inside the band, dB/Hz. */
+  peakPsdDb: number
+  /** Frequency of the peak bin, Hz. */
+  peakHz: number
 }
 
 export type EmitterKind = 'tone' | 'burst'
@@ -249,7 +260,13 @@ export class DspFixtureService extends Service {
   taper(name: TaperName, n: number): Float64Array {
     const w = new Float64Array(n)
     if (name === 'rectangular') return w.fill(1)
-    for (let i = 0; i < n; i++) w[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / n) // periodic Hann
+    // Periodic (DFT-even) cosine-sum tapers.
+    const [a0, a1, a2] =
+      name === 'hann' ? [0.5, 0.5, 0] : name === 'hamming' ? [0.54, 0.46, 0] : [0.42, 0.5, 0.08]
+    for (let i = 0; i < n; i++) {
+      const x = (2 * Math.PI * i) / n
+      w[i] = a0 - a1 * Math.cos(x) + a2 * Math.cos(2 * x)
+    }
     return w
   }
 
@@ -285,7 +302,11 @@ export class DspFixtureService extends Service {
         im[i] = samplesQ[off + i] * w[i]
       }
       this.fft(re, im)
-      for (let k = 0; k < fftSize; k++) acc[k] += re[k] * re[k] + im[k] * im[k]
+      if (options.combine === 'max') {
+        for (let k = 0; k < fftSize; k++) acc[k] = Math.max(acc[k], segments * (re[k] * re[k] + im[k] * im[k]))
+      } else {
+        for (let k = 0; k < fftSize; k++) acc[k] += re[k] * re[k] + im[k] * im[k]
+      }
     }
 
     const binWidthHz = sampleRateHz / fftSize
@@ -311,7 +332,12 @@ export class DspFixtureService extends Service {
     const bands: SubBand[] = []
     for (let b = 0; b < numSubBands; b++) {
       let sum = 0
-      for (let k = b * binsPerBand; k < (b + 1) * binsPerBand; k++) sum += psd.psd[k]
+      let peak = 0
+      let peakK = b * binsPerBand
+      for (let k = b * binsPerBand; k < (b + 1) * binsPerBand; k++) {
+        sum += psd.psd[k]
+        if (psd.psd[k] > peak) (peak = psd.psd[k]), (peakK = k)
+      }
       const meanPsd = sum / binsPerBand
       const lowHz = -psd.sampleRateHz / 2 + b * bandwidthHz
       bands.push({
@@ -323,6 +349,9 @@ export class DspFixtureService extends Service {
         meanPsd,
         meanPsdDb: toDb(meanPsd),
         powerDb: toDb(meanPsd * bandwidthHz),
+        peakPsd: peak,
+        peakPsdDb: toDb(peak),
+        peakHz: psd.freqsHz[peakK],
       })
     }
     return bands
