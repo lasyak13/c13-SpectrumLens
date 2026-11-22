@@ -1,0 +1,29 @@
+{
+  "name": "c13-spectrumlens",
+  "version": "0.1.0",
+  "description": "C13 SpectrumLens - signal-window spectrum occupancy detection (Signals, Wireless and Control)",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lasyak13/c13-SpectrumLens.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lasyak13/c13-SpectrumLens/issues"
+  },
+  "homepage": "https://github.com/lasyak13/c13-SpectrumLens#readme",
+  "dependencies": {
+    "cordis": "^4.0.0-rc.13"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "type": "module",
+  "private": true
+}
